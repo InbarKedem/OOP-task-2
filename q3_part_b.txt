@@ -1,0 +1,9 @@
+The `if` statement inside the `__call__` method is designed to handle the
+decorator logic by distinguishing between two phases. When the decorator is
+first applied, it translates the call into something like
+`HTMLTag("b")(say_hello)`. This triggers the `if` block because the function
+is passed as an argument, allowing the class to save the function and return
+the instance. Later, when the decorated function is executed, `__call__` is
+invoked again but without arguments. This triggers the `else` block, where
+the stored function is executed and its result is wrapped in the desired
+HTML tags.

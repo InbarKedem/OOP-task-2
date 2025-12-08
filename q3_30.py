@@ -12,15 +12,15 @@ class HTMLTag:
             return f"<{self.tag}>{result}</{self.tag}>"
 
 
-@HTMLTag("b")  # same as: say_hello = HTMLTag("b")(say_hello)
+@HTMLTag("b")
 def say_hello():
     return "Hello Bold World"
 
 
-@HTMLTag("h1")  # same as: big_title = HTMLTag("h1")(big_title)
+@HTMLTag("h1")
 def big_title():
     return "I am Important"
 
 
-print(say_hello())  # <b>Hello Bold World</b>
-print(big_title())  # <h1>I am Important</h1>
+print(say_hello())
+print(big_title())
