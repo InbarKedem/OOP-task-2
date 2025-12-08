@@ -1,11 +1,12 @@
 # building the child class for a with the child's name, age, energy level and focus time.
 class Child:
+    default_age = 8
+
     def __init__(self, name, age, energy_level, focus_time_hours):
         self.name = name
         self.age = age
         self.energy_level = energy_level
         self.focus_time_hours = focus_time_hours
-        self.default_age = 8
 
     def getAge(self):
         # returns age if its between 6 and 12 else returns the default
@@ -13,7 +14,7 @@ class Child:
             return self.default_age
         return self.age
 
-    def getFocustTime(self):
+    def getFocusTime(self):
         # gets focus time before break in hours
         return self.focus_time_hours
 
@@ -33,14 +34,21 @@ class InterestGroup:
         self.Children_list.append(child)
 
     def removeChild(self, child):
-        # removes a child from the list
-        self.Children_list.remove(child)
+        # removes a child from the list, only if they are in the list
+        if child in self.Children_list:
+            self.Children_list.remove(child)
 
-    def groupAvergageAge(self):
+    def groupAverageAge(self):
         # gets the group average age if there's anyone is the group otherwise 0
         if not self.Children_list:
             return 0
         return sum(child.getAge() for child in self.Children_list) / len(self.Children_list)
+
+    def minFocusTime(self):
+        # returns the minimum focus time among all children in the group. (If the group is empty, return -1)
+        if not self.Children_list:
+            return -1
+        return min(child.getFocusTime() for child in self.Children_list)
 
     def __len__(self):
         # returns the length of the children list
@@ -61,16 +69,18 @@ class InterestGroup:
             # max required focus of the two (0 if one side is regular)
             req_focus = 0
             if isinstance(self, AdvancedInterestGroup):
-                req_focus = max(req_focus, self.required_focus_hours)
+                req_focus = max(req_focus, self.required_focus_time)
             if isinstance(other, AdvancedInterestGroup):
-                req_focus = max(req_focus, other.required_focus_hours)
+                req_focus = max(req_focus, other.required_focus_time)
             new_group = AdvancedInterestGroup(new_name, req_focus)
         else:
             new_group = InterestGroup(new_name)
         # makes sure there are no duplicates
         for child in self.Children_list + other.Children_list:
             if child not in new_group.Children_list:
-                new_group.addChild(child)
+                # Use InterestGroup.addChild to bypass the check in AdvancedInterestGroup
+                # as the instruction requires including ALL children.
+                InterestGroup.addChild(new_group, child)
         return new_group
 
     # this is the function for e that will add all the children from group 1 to group2
@@ -82,22 +92,23 @@ class InterestGroup:
                 # for AdvancedInterestGroup this will use the overridden addChild
                 self.addChild(child)
         return self
+    
 # creating the advanced interest group that sets required hours
 class AdvancedInterestGroup(InterestGroup):
     def __init__(self, name, required_focus_time):
         super().__init__(name)
-        self.required_focus_hours = required_focus_time
+        self.required_focus_time = required_focus_time
 
-    def setRequiredFocus_hours(self, required_focus_hours):
-        self.required_focus_hours = required_focus_hours
+    def setRequiredFocus(self, time):
+        self.required_focus_time = time
 
     def addChild(self, child):
-        if child.getFocustTime() >= self.required_focus_hours:
+        if child.getFocusTime() >= self.required_focus_time:
             InterestGroup.addChild(self, child)
 
     def __str__(self):
         children_str = "\n".join(str(child) for child in self.Children_list)
-        return f"Advanced group {self.name} (required focus: {self.required_focus_hours}h):\n{children_str}"
+        return f"Advanced group {self.name} (required focus: {self.required_focus_time}h):\n{children_str}"
 
 child1 = Child("Eden", 10, 90, 4)
 child2 = Child("Ziv", 7, 80, 3)
