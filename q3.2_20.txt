@@ -1,0 +1,6 @@
+There is an if inside the __call__ function to handle the decorator.
+When the decorator is first called the decorator will translate our call into
+HTMLTag("b")(say_hello) for example, thus going into the if part(entering with the say_hello function).
+After the decorator is done it actually executes the function thus invoking the
+__call__() function without a function argument so it enters into the else part where
+we get our desired output.
